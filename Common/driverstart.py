@@ -7,7 +7,7 @@ def driverstart(devices):
     elif devices=='chrome'or devices=='Chrome':
         driver=webdriver.Chrome()
 
-    elif devices=='ie'or devices=='IE'or devices=='IE':
+    elif devices=='ie'or devices=='IE'or    devices=='IE':
         driver=webdriver.Ie()
     else:
         print "Not found suitable browser"
