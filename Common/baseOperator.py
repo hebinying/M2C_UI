@@ -29,6 +29,14 @@ class DriverBase:
         element=self.driver.find_element_by_tag_name(tag)
         return element
 
+    def findElementByPath(self,path):
+        element=self.driver.find_element_by_xpath(path)
+        return element
+
+    def findElementByCssSelector(self,ele):
+        element=self.driver.find_element_by_css_selector(ele)
+        return element
+
     def findElementsByID(self, ID):
         elements = self.driver.find_element_by_id(ID)
         return elements
@@ -44,6 +52,16 @@ class DriverBase:
     def findElementsByTagName(self, tag):
         elements = self.driver.find_element_by_tag_name(tag)
         return elements
+
+
+    def findElementsByPath(self,path):
+        elements=self.driver.find_element_by_xpath(path)
+        return elements
+
+    def findElementsByCssSelector(self,ele):
+        elements=self.driver.find_element_by_css_selector(ele)
+        return elements
+
 
     def click(self,element):
         if any(element):
