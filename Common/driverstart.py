@@ -13,4 +13,6 @@ def driverstart(devices):
         print "Not found suitable browser"
         return
 
+    '''设置窗口为最大'''
+    driver.maximize_window()
     return  driver
