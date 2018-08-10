@@ -1,3 +1,4 @@
+#coding=utf-8
 '''重新封装基础方法，方便调用'''
 import sys
 import os
@@ -5,8 +6,9 @@ from selenium import webdriver
 
 class DriverBase:
     #初始化driver
-    def __init__(self,driver):
+    def __init__(self,driver,url):
         self.driver=driver
+        self.driver.get(url)
         '''设置窗口为最大'''
         self.driver.maximize_window()
 
@@ -84,6 +86,5 @@ class DriverBase:
         num=self.driver.window_handles()
         return num
 
-
-
-
+    def send(self,name):
+        self.driver.send_key(name)
