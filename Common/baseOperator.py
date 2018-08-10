@@ -3,6 +3,9 @@
 import sys
 import os
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
+
 
 class DriverBase:
     #初始化driver
@@ -54,7 +57,7 @@ class DriverBase:
         return elements
 
     def findElementsByTagName(self, tag):
-        elements = self.driver.find_element_by_tag_name(tag)
+        elements = self.driver.find_elements_by_tag_name(tag)
         return elements
 
 
@@ -86,5 +89,5 @@ class DriverBase:
         num=self.driver.window_handles()
         return num
 
-    def send(self,name):
-        self.driver.send_key(name)
+    def send(self,element,name):
+        element.send_key(name)
