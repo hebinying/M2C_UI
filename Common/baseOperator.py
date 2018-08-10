@@ -7,6 +7,8 @@ class DriverBase:
     #初始化driver
     def __init__(self,driver):
         self.driver=driver
+        '''设置窗口为最大'''
+        self.driver.maximize_window()
 
     #关闭浏览器
     def stopDriver(self):
@@ -68,6 +70,19 @@ class DriverBase:
             element.click()
         else:
             print "元素未查找到"
+
+
+    '''选项卡的切换'''
+    def changewintofirst(self):
+        self.driver.switch_to_window(self.driver.window_handles[0])
+
+    def changewinton(self,n):
+        self.driver.switch_to_window(self.driver.window_handles[n])
+
+    '''获取浏览器的选项卡数量'''
+    def get_handles(self):
+        num=self.driver.window_handles()
+        return num
 
 
 

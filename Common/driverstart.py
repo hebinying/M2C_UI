@@ -1,3 +1,4 @@
+#coding=utf-8
 from selenium import webdriver
 
 def driverstart(devices):
@@ -12,7 +13,6 @@ def driverstart(devices):
     else:
         print "Not found suitable browser"
         return
-
-    '''设置窗口为最大'''
-    driver.maximize_window()
     return  driver
+
+
