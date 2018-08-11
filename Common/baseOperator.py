@@ -4,16 +4,20 @@ import sys
 import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
+from selenium.webdriver.remote.webelement import WebElement
+import time
 
 
 class DriverBase:
     #初始化driver
-    def __init__(self,driver,url):
+    def __init__(self,driver):
         self.driver=driver
+
+
+    def get_url(self,url):
+        self.driver.maximize_window()
         self.driver.get(url)
         '''设置窗口为最大'''
-        self.driver.maximize_window()
 
     #关闭浏览器
     def stopDriver(self):
@@ -52,8 +56,9 @@ class DriverBase:
         elements = self.driver.find_element_by_name(Name)
         return elements
 
-    def findElementsByClassName(self, cName):
-        elements = self.driver.find_element_by_class_name(cName)
+    def findElementsByClassName(self,cName):
+        time.sleep(10)
+        elements = self.driver.find_elements_by_class_name(cName)
         return elements
 
     def findElementsByTagName(self, tag):
@@ -66,16 +71,32 @@ class DriverBase:
         return elements
 
     def findElementsByCssSelector(self,ele):
-        elements=self.driver.find_element_by_css_selector(ele)
+        elements=self.driver.find_elements_by_css_selector(ele)
+        print "wo be here"
         return elements
 
 
-    def click(self,element):
-        if any(element):
+    def ECclick(self,name):
+        element=self.findElementByCssSelector(name)
+        if element:
             element.click()
         else:
             print "元素未查找到"
 
+    def ECsclick(self,name,num):
+        elements=self.findElementsByCssSelector(name)
+        if elements[num]:
+            elements[num].click()
+        else:
+            print "元素未查找到"
+
+    '''根据id'''
+    def EIclick(self,id):
+        element=self.findElementByID(id)
+        if element:
+            element.click()
+        else:
+            print "元素未查找到"
 
     '''选项卡的切换'''
     def changewintofirst(self):
@@ -89,5 +110,20 @@ class DriverBase:
         num=self.driver.window_handles()
         return num
 
-    def send(self,element,name):
-        element.send_key(name)
+    def ECsend(self,element,text,num):
+        elements=self.findElementsByCssSelector(element)
+        print elements
+        if num:
+            elements[num].send_keys(text)
+        else:
+            num=0
+            elements[num].send_keys(text)
+
+    def EIsend(self,id,text):
+        element=self.findElementByID(id)
+        if element:
+            element.send_keys(text)
+        else:
+            print "%s is not founf" %id
+
+

@@ -7,7 +7,7 @@ import os
 ROOT = lambda base : os.path.join(os.path.dirname(__file__), base).replace('\\','/')
 
 def getbrowser():
-    f = open(ROOT('browser.txt'), 'r')
+    f = open(ROOT('config/browser.txt'), 'r')
     if f:
         list=f.readlines()
         '''for line in range(0,len(list)):

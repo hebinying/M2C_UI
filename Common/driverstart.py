@@ -4,6 +4,7 @@ from Common import file_excute
 def openfile():
     list=file_excute.getbrowser()
     for name in range(0,len(list)):
+        list[name]=list[name].strip()
         if driverstart(list[name]):
             driver=driverstart(list[name])
             return driver
