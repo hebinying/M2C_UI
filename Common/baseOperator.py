@@ -67,7 +67,7 @@ class DriverBase:
 
 
     def findElementsByPath(self,path):
-        elements=self.driver.find_element_by_xpath(path)
+        elements=self.driver.find_elements_by_xpath(path)
         return elements
 
     def findElementsByCssSelector(self,ele):
@@ -95,6 +95,20 @@ class DriverBase:
         element=self.findElementByID(id)
         if element:
             element.click()
+        else:
+            print "元素未查找到"
+
+    def EPclick(self,path):
+        element=self.findElementByPath(path)
+        if element:
+            element.click()
+        else:
+            print "元素未查找到"
+
+    def EPsclick(self,path,num):
+        elements=self.findElementsByPath(path)
+        if elements:
+            elements[num].click()
         else:
             print "元素未查找到"
 
