@@ -1,5 +1,4 @@
 #coding=utf-8
-import unittest
 from Common import driverstart as DR
 from Common import baseOperator as BO
 from Searchsql import GetVerifyCode as gt

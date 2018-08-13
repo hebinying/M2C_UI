@@ -5,6 +5,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 
@@ -126,4 +127,10 @@ class DriverBase:
         else:
             print "%s is not founf" %id
 
+    def get_title(self):
+        title=EC.get_title()(self.driver)
+        return title
+    def contain_title(self,text):
+        flag=EC.title_contains(text)(self.driver)
+        return flag
 
