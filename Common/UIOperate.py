@@ -2,6 +2,7 @@
 import baseOperator
 import time
 
+
 driver=baseOperator.DriverBase()
 def get_elements(path):
     if "商家平台" in driver.title:
