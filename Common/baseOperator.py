@@ -6,6 +6,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.by import By
 import time
 
 
@@ -25,19 +27,26 @@ class DriverBase:
         os.system("Stop Driver")
         self.driver.close()
 
+
     def findElementByID(self,ID):
         element=self.driver.find_element_by_id(ID)
         return element
 
     def findElementByName(self,Name):
+        locater=(By.NAME,Name)
+        WebDriverWait(self.driver,20,1).until(EC.presence_of_element_located(locater))
         element=self.driver.find_element_by_name(Name)
         return element
 
     def findElementByClassName(self,cName):
+        locater = (By.CLASS_NAME, cName)
+        WebDriverWait(self.driver, 20, 1).until(EC.presence_of_element_located(locater))
         element=self.driver.find_element_by_class_name(cName)
         return element
 
     def findElementByTagName(self,tag):
+        locater = (By.TAG_NAME, tag)
+        WebDriverWait(self.driver, 20, 1).until(EC.presence_of_element_located(locater))
         element=self.driver.find_element_by_tag_name(tag)
         return element
 
@@ -125,14 +134,17 @@ class DriverBase:
         num=self.driver.window_handles()
         return num
 
-    def ECsend(self,element,text,num):
+    def ECsends(self,element,text,num):
         elements=self.findElementsByCssSelector(element)
         print elements
-        if num:
+        if elements:
             elements[num].send_keys(text)
         else:
-            num=0
             elements[num].send_keys(text)
+    def ECsend(self,element,text):
+        element=self.findElementByCssSelector(element)
+        if element:
+            element.send_keys(text)
 
     def EIsend(self,id,text):
         element=self.findElementByID(id)

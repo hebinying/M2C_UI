@@ -4,7 +4,7 @@ from Common import driverstart as DR
 from Common import baseOperator as BO
 from Searchsql import GetVerifyCode as gt
 
-'''检查：登录，退出，修改登录密码'''
+'''检查：登录，登录后的退出，修改登录密码'''
 
 
 class BULogin(unittest.TestCase):
@@ -13,14 +13,22 @@ class BULogin(unittest.TestCase):
         dr = DR.openfile()
         self.driver = BO.DriverBase(dr)
         self.driver.get_url("http://b.m2c2017test.com")
-    def bLogin(self,username,password):
-        self.driver.ECsend("input",username,0)
-        self.driver.ECsend("input",password,1)
+        self.driver.ECsend("input", '13500000046', 0)
+        self.driver.ECsend("input", '123456', 1)
         self.driver.ECclick("button")
         if self.driver.contain_title("商家平台"):
             print "商家登录"
 
-    def bChange(self,mobile, npwd):
+
+    #查看账户信息
+    def test_check(self):
+        self.driver.ECclick("span.el-dropdown-link.ellipsis.el-dropdown-selfdefine")
+        self.driver.ECclick("div[path='/s/userInfo']")
+        self.assertIn(self.driver.findElementByPath("//span[text()='管理员']").text(),"管理员",msg="进入账户信息成功")
+    #修改密码
+    def test_bChange(self):
+        npwd='123456'
+        mobile='13500000046'
         self.driver.ECclick("span.el-dropdown-link.ellipsis.el-dropdown-selfdefine")
         self.driver.ECclick("div[path='/s/updatePass']")
         self.driver.EIclick("sendVer")
@@ -35,6 +43,24 @@ class BULogin(unittest.TestCase):
         self.driver.EIsend("newPass", npwd)
         self.driver.EIsend("confirmNewPass", npwd)
         self.driver.ECclick("button.el-button.el-button--primary")
+    #修改交易密码
+    def test_bChangecashPass(self):
+        npwd = '123456'
+        mobile = '13500000046'
+        self.driver.ECclick("span.el-dropdown-link.ellipsis.el-dropdown-selfdefine")
+        self.driver.ECclick("div[path='/s/cashPass']")
+        self.driver.EIclick("sendVer")
+        g = gt.GetVerifyCode()
+        sql = "select verify_code from t_support_verify_code WHERE created_date=(select MAX(created_date) FROM  t_support_verify_code WHERE mobile=%s)" % mobile
+        cur = g.connect_sql("m2c_support")
+        code = g.excute_sql(cur, sql)
+        if code:
+            self.driver.EIsend("verifyCode", code)
+        '''设置新的交易密码'''
+        self.driver.EIsend("newPass", npwd)
+        self.driver.EIsend("confirmNewPass", npwd)
+        self.driver.EPclick("//span[text()='保存']")
+        #self.driver.ECclick("button.el-button.el-button--primary")
 
     "退出登录"
     def bQuit(self):
