@@ -29,36 +29,50 @@ class DriverBase:
 
 
     def findElementByID(self,ID):
-        element=self.driver.find_element_by_id(ID)
+        #self.driver.timeouts().implicitlyWait(10)
+        element=WebDriverWait(self.driver,10).until(lambda x:x.find_element_by_id(ID))
+        #element=self.driver.find_element_by_id(ID)
         return element
 
     def findElementByName(self,Name):
-        locater=(By.NAME,Name)
-        WebDriverWait(self.driver,20,1).until(EC.presence_of_element_located(locater))
+        '''locater=(By.NAME,Name)
+        WebDriverWait(self.driver,20,1).until(EC.presence_of_element_located(locater))'''
         element=self.driver.find_element_by_name(Name)
         return element
 
     def findElementByClassName(self,cName):
-        locater = (By.CLASS_NAME, cName)
-        WebDriverWait(self.driver, 20, 1).until(EC.presence_of_element_located(locater))
-        element=self.driver.find_element_by_class_name(cName)
+        '''locater = (By.CLASS_NAME, cName)
+        WebDriverWait(self.driver, 20, 1).until(EC.presence_of_element_located(locater))'''
+        element=WebDriverWait(self.driver,10).until(lambda x:x.find_element_by_class_name(cName))
+        #element=self.driver.find_element_by_class_name(cName)
         return element
 
     def findElementByTagName(self,tag):
-        locater = (By.TAG_NAME, tag)
-        WebDriverWait(self.driver, 20, 1).until(EC.presence_of_element_located(locater))
-        element=self.driver.find_element_by_tag_name(tag)
+        '''locater = (By.TAG_NAME, tag)
+        WebDriverWait(self.driver, 20, 2).until(EC.presence_of_element_located(locater))'''
+        element=WebDriverWait(self.driver,10).until(lambda x:x.find_element_by_tag_name(tag))
+        #element=self.driver.find_element_by_tag_name(tag)
         return element
 
     def findElementByPath(self,path):
-        element=self.driver.find_element_by_xpath(path)
+        element=WebDriverWait(self.driver,10).until(lambda x:x.find_element_by_xpath(path))
+        #element=self.driver.find_element_by_xpath(path)
         return element
 
     def findElementByCssSelector(self,ele):
-        element=self.driver.find_element_by_css_selector(ele)
+        '''str=ele.split('.')
+        if len(str)>1:
+            locater=(By.CLASS_NAME,str[1])
+        else:
+            locater=(By.CLASS_NAME,ele)
+        WebDriverWait(self.driver, 20, 2).until(EC.presence_of_element_located(locater))'''
+        element=WebDriverWait(self.driver,10).until(lambda x:x.find_element_by_css_selector(ele))
+        #element=self.driver.find_element_by_css_selector(ele)
         return element
 
     def findElementsByID(self, ID):
+        '''locater=(By.ID,ID)
+        WebDriverWait(self.driver, 20, 2).until(EC.presence_of_element_located(locater))'''
         elements = self.driver.find_element_by_id(ID)
         return elements
 
@@ -67,8 +81,8 @@ class DriverBase:
         return elements
 
     def findElementsByClassName(self,cName):
-        time.sleep(10)
-        elements = self.driver.find_elements_by_class_name(cName)
+        elements=WebDriverWait(self.driver,10).until(lambda x:x.find_elements_by_class_name(cName))
+        #elements = self.driver.find_elements_by_class_name(cName)
         return elements
 
     def findElementsByTagName(self, tag):
@@ -77,32 +91,43 @@ class DriverBase:
 
 
     def findElementsByPath(self,path):
-        elements=self.driver.find_elements_by_xpath(path)
+        elements=WebDriverWait(self.driver,10).until(lambda x:x.find_elements_by_xpath(path))
+
+        #elements=self.driver.find_elements_by_xpath(path)
         return elements
 
     def findElementsByCssSelector(self,ele):
-        elements=self.driver.find_elements_by_css_selector(ele)
+        elements=WebDriverWait(self.driver,10).until(lambda x:x.find_elements_by_css_selector(ele))
+        #elements=self.driver.find_elements_by_css_selector(ele)
         print "wo be here"
         return elements
 
 
     def ECclick(self,name):
+
         element=self.findElementByCssSelector(name)
+
+        WebDriverWait(self.driver, 10,0.5).until(EC.visibility_of(element))
         if element:
             element.click()
+
         else:
             print "元素未查找到"
 
     def ECsclick(self,name,num):
         elements=self.findElementsByCssSelector(name)
+
         if elements[num]:
+            WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(elements[num]))
             elements[num].click()
+            print "click success"
         else:
             print "元素未查找到"
 
     '''根据id'''
     def EIclick(self,id):
         element=self.findElementByID(id)
+        WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(element))
         if element:
             element.click()
         else:
@@ -110,6 +135,7 @@ class DriverBase:
 
     def EPclick(self,path):
         element=self.findElementByPath(path)
+        WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(element))
         if element:
             element.click()
         else:
@@ -118,6 +144,7 @@ class DriverBase:
     def EPsclick(self,path,num):
         elements=self.findElementsByPath(path)
         if elements:
+            WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(elements[num]))
             elements[num].click()
         else:
             print "元素未查找到"
@@ -160,3 +187,5 @@ class DriverBase:
         flag=EC.title_contains(text)(self.driver)
         return flag
 
+    def wait(self,s):
+        time.sleep(s)
