@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 import time
+import random
 
 
 class DriverBase:
@@ -167,7 +168,7 @@ class DriverBase:
         if elements:
             elements[num].send_keys(text)
         else:
-            elements[num].send_keys(text)
+            print "element %s is not found" % element
     def ECsend(self,element,text):
         element=self.findElementByCssSelector(element)
         if element:
@@ -178,7 +179,24 @@ class DriverBase:
         if element:
             element.send_keys(text)
         else:
-            print "%s is not founf" %id
+            print "%s is not found" %id
+    def EPsend(self,path,text):
+        element=self.findElementByPath(path)
+        if element:
+            element.send_keys(text)
+        else:
+            print "element %s is not found" %path
+    def EPsends(self,path,text,num=-1):
+        elements=self.findElementsByPath(path)
+        try :
+            if num==-1:
+                num=random.randint(0,len(elements))
+                elements[num].send_keys(text)
+            else:
+                elements[num].send_keys(text)
+        except:
+            print "element %s is not found" %path
+
 
     def get_title(self):
         title=EC.get_title()(self.driver)
@@ -189,3 +207,5 @@ class DriverBase:
 
     def wait(self,s):
         time.sleep(s)
+    def back(self):
+        self.driver.back()
