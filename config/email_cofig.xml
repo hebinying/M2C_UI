@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Email>
+    <EmailServerConf>
+        <!-- smtp配置 ：只支持1个-->
+        <smtp  ip="smtp.exmail.qq.com" port="465" user="heby@m2c2017.com" password="UZw3WKwVHetaABBm" />
+    </EmailServerConf>
+    <!-- 收件人：支持多个 -->
+    <From address="heby@m2c2017.com"/>
+    <ToEmailList>
+        <To file="./config/email.txt" />
+    </ToEmailList>
+
+    <!-- 邮件主题：只支持1个 -->
+    <Subject title="UI自动化测试报告" />
+    <!-- 邮件正文：只支持1个，html格式，无图片 -->
+    <Emailcomment>
+        <comment file="./Report" />
+    </Emailcomment>
+    <EmailAttach>
+        <attach file="./Report" />
+    </EmailAttach>
+
+</Email>
