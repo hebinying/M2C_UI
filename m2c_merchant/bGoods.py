@@ -7,10 +7,10 @@ from Common import baseOperator as BO
 class bTestGoods(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        dr = DR.driverstart("chrome")
-        cls.driver = BO.DriverBase(dr)
-        cls.driver.get_url("http://b.m2c2017test.com")
-        cls.driver.ECsends("input", '13500000046', 0)
+        # dr = DR.driverstart()
+        cls.driver = BO.DriverBase("chrome")
+        cls.driver.get_url("http://b.m2c2017final.com")
+        cls.driver.ECsends("input", '13500000070', 0)
         cls.driver.ECsends("input", '123456', 1)
         cls.driver.ECclick("button")
 
@@ -69,10 +69,9 @@ class bTestGoods(unittest.TestCase):
 class bTestGoodAppraise(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        dr = DR.driverstart("chrome")
-        cls.driver = BO.DriverBase(dr)
-        cls.driver.get_url("http://b.m2c2017test.com")
-        cls.driver.ECsends("input", '13500000046', 0)
+        cls.driver = BO.DriverBase("chrome")
+        cls.driver.get_url("http://b.m2c2017final.com")
+        cls.driver.ECsends("input", '13500000070', 0)
         cls.driver.ECsends("input", '123456', 1)
         cls.driver.ECclick("button")
 

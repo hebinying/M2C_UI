@@ -10,10 +10,10 @@ import time
 class BULogin(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        dr = DR.driverstart("chrome")
-        cls.driver = BO.DriverBase(dr)
-        cls.driver.get_url("http://b.m2c2017test.com")
-        cls.driver.ECsends("input", '13500000046', 0)
+        #dr = DR.driverstart()
+        cls.driver = BO.DriverBase("chrome")
+        cls.driver.get_url("http://b.m2c2017final.com")
+        cls.driver.ECsends("input", '13500000070', 0)
         cls.driver.ECsends("input", '123456', 1)
         cls.driver.ECclick("button")
 
@@ -47,7 +47,7 @@ class BULogin(unittest.TestCase):
     #修改交易密码
     def test_ChangecashPass(self):
         npwd = '123456'
-        mobile = '13500000046'
+        mobile = '13500000070'
         self.driver.ECclick("span.ellipsis")
         self.driver.ECclick("div[path='/s/cashPass']")
         self.driver.EIclick("sendVer")
@@ -76,11 +76,13 @@ class BULogin(unittest.TestCase):
 
 
 if __name__=="__main__":
-    '''suite=unittest.TestSuite()
-    suite.addTest(BULogin("test_acheck"))
-    suite.addTest(BULogin("test_ChangecashPass"))
-    suite.addTest(BULogin("test_bChange"))
-    suite.addTest(BULogin("test_bQuit"))
-    runner=unittest.TextTestRunner()
-    runner.run(suite)'''
+    # suite=unittest.TestSuite()
+    #
+    # suite.addTest(BULogin("test_acheck"))
+    # suite.addTest(BULogin("test_ChangecashPass"))
+    # suite.addTest(BULogin("test_bChange"))
+    # suite.addTest(BULogin("test_bQuit"))
+    # runner=unittest.TextTestRunner()
+    # runner.run(suite)
+    print "aaa"
     unittest.main()

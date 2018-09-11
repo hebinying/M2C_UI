@@ -14,10 +14,18 @@ import random
 
 class DriverBase:
     #初始化driver
-    def __init__(self,driver):
+    def __init__(self,devices):
+
+        if devices == 'firefox' or devices == 'Firefox':
+            driver = webdriver.Firefox()
+        elif devices == 'chrome' or devices == 'Chrome':
+            driver = webdriver.Chrome()
+        elif devices == 'ie' or devices == 'IE' or devices == 'IE':
+            driver = webdriver.Ie()
+        else:
+            print "Not found suitable browser"
+            exit(0)
         self.driver=driver
-
-
     def get_url(self,url):
         self.driver.maximize_window()
         self.driver.get(url)
@@ -119,7 +127,7 @@ class DriverBase:
         elements=self.findElementsByCssSelector(name)
 
         if elements[num]:
-            WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(elements[num]))
+            #WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(elements[num]))
             elements[num].click()
             print "click success"
         else:
