@@ -178,11 +178,11 @@ class CommEmail:
         self.sSubject = ""
         self.emComment = []
         self.tDate = Utils.formatdate(localtime=1)
-        logging.basicConfig(level=logging.DEBUG,
-                            format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                            datefmt='%a, %d %b %Y %H:%M:%S',
-                            filename='Email.log',
-                            filemode='a')
+        # logging.basicConfig(level=logging.DEBUG,
+        #                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+        #                     datefmt='%a, %d %b %Y %H:%M:%S',
+        #                     filename='Email.log',
+        #                     filemode='a')
 
         # from conf-profile to set email-server  configure
         self.fEmailServerConfFile=emailConf
@@ -224,8 +224,9 @@ class CommEmail:
             # comment邮件内容
             for comment in xmlEmailComments:
                 cfile = comment.getAttribute("file")
-                results = file_excute.get_file(cfile, '.html')
+                results = file_excute.get_file(cfile, '.html','2018-09-12')
                 for result in results:
+                    print result
                     self.emComment.append(open(result).read())
 
             # attach
@@ -236,6 +237,7 @@ class CommEmail:
                 #获取今天执行的报告
                 results = file_excute.get_file(cfile, '.html')
                 for result in results:
+                    print result
                     self.dattach.append(result)
 
             logging.info(
@@ -259,18 +261,22 @@ class CommEmail:
 
         # email comment
         for comment in self.emComment:
-            emailComment=MIMEText(comment, _subtype="html", _charset='base64')
+            emailComment=MIMEText(comment, _subtype="html", _charset='utf-8')
             msg.attach(emailComment)
         #emailComment = MIMEText(self.emComment, _subtype="html", _charset='base64')
         # add eamil attach
-        for a in self.dattach:
-            # t = MIMEBase('application', 'octet-stream')
-            t = MIMEBase('html', 'base64')
-            t.set_payload(open(a, 'rb').read())
-            # encoders.encode_base64(t)
-            t.add_header('Content-Disposition', 'attachment;filename="%s"' % os.path.basename(a))
-
+        print "ssss"
+        for attach in self.dattach:
+            #t = MIMEBase('application', 'octet-stream')
+            print attach
+            t = MIMEBase('html', 'utf-8')
+            t.set_payload(open(attach, 'rb').read())
+            #encoders.encode_base64(t)
+            #邮件的文件名标题不能太长，否则会添加失败
+            t.add_header('Content-Disposition', 'attachment;filename="%s"' % os.path.basename(attach))
+            #t.add_header('Content-Disposition', 'attachment;filename="discover.html"')
             msg.attach(t)
+
         try:
             #msg.attach(emailComment)
             emailHandle = smtplib.SMTP_SSL()
@@ -291,13 +297,35 @@ class CommEmail:
 
 
 if __name__=="__main__":
-    print "execute xml"
-
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                        datefmt='%a, %d %b %Y %H:%M:%S',
-                        filename='Email.log',
+    print "start"
+    formater='%(asctime)s %(process)d:%(pathname)s %(filename)s[line:%(lineno)d]  %(module)s %(funcName)s %(levelname)s %(message)s'
+    logname="./Report/log"+datetime.datetime.now().strftime("%Y%m%d")+".log"
+    infoLogname="./Report/infolog"+datetime.datetime.now().strftime("%Y%m%d")+".log"
+    errorLogname="./Report/errorlog"+datetime.datetime.now().strftime("%Y%m%d")+".log"
+    logging.basicConfig(level=logging.NOTSET,
+                        format=formater,
+                        datefmt='%Y-%m-%d %H:%M:%S',
+                        filename=logname,
                         filemode='a')
+    #a添加，w覆盖
+    # infoformat=logging.Formatter(formater)
+    # infoLogger=logging.getLogger("a")
+    # errorLogger=logging.getLogger("b")
+    # infoLogger.setLevel(logging.DEBUG)
+    # errorLogger.setLevel(logging.ERROR)
+    #
+    # infoHandler=logging.FileHandler(infoLogname,'w')
+    # infoHandler.setLevel(logging.DEBUG)
+    # infoHandler.setFormatter(infoformat)
+    #
+    # errorHandler=logging.FileHandler(errorLogname,'w')
+    # errorHandler.setLevel(logging.ERROR)
+    # errorHandler.setFormatter(infoformat)
+    #
+    # infoLogger.addHandler(infoHandler)
+    # errorLogger.addHandler(errorHandler)
+
     commTestSuite()
     #发送邮件
-    a = CommEmail()
+    # a = CommEmail()
+    # a.sendHtmlEmail()

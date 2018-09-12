@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCases>
 	<Testcase>
-		<TestName name="商家平台自动化UI测试discover" decription="商家平台自动化UI测试执行内容情况" />
+		<TestName name="商家平台自动化UI测试" decription="商家平台自动化UI测试执行内容情况" />
 		<LoadMethod method="discover"/>
 		<TestLoaders>
 			<Testsuite path="m2c_merchant" pattern="BUL*.py" />

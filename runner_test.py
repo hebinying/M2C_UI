@@ -201,7 +201,7 @@ class CommEmail:
 
         # email comment
         for comment in self.emComment:
-            emailComment=MIMEText(comment, _subtype="html", _charset='base64')
+            emailComment=MIMEText(comment, _subtype="html", _charset='utf-8')
             msg.attach(emailComment)
         #emailComment = MIMEText(self.emComment, _subtype="html", _charset='base64')
         # add eamil attach
@@ -211,10 +211,8 @@ class CommEmail:
             t.set_payload(open(a, 'rb').read())
             # encoders.encode_base64(t)
             t.add_header('Content-Disposition', 'attachment;filename="%s"' % os.path.basename(a))
-
+            print t
             msg.attach(t)
-
-
 
         try:
             #msg.attach(emailComment)

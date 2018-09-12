@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 import time
-import random
+import random,logging
 
 
 class DriverBase:
@@ -217,3 +217,15 @@ class DriverBase:
         time.sleep(s)
     def back(self):
         self.driver.back()
+
+    #模拟鼠标操作点击'x'btn，xpath方法查找元素
+    def inputclear(self,p,name):
+        path=p+'/following-sibling::'+name
+        #激活输入框
+        self.EPclick(p)
+        #点击删除icon
+        self.EPclick(path)
+        # element.click()
+        # element.clear()
+
+
