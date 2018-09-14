@@ -7,7 +7,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import WebDriverException
 import time
 import random,logging
 
@@ -127,7 +129,7 @@ class DriverBase:
         elements=self.findElementsByCssSelector(name)
 
         if elements[num]:
-            #WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(elements[num]))
+            #self.wait(WebDriverWait(self.driver, 10, 0.5).until(EC.element_to_be_clickable(elements[num])))
             elements[num].click()
             print "click success"
         else:
@@ -153,8 +155,11 @@ class DriverBase:
     def EPsclick(self,path,num):
         elements=self.findElementsByPath(path)
         if elements:
-            WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of(elements[num]))
-            elements[num].click()
+            WebDriverWait(self.driver, 20, 0.5).until(EC.visibility_of(elements[num]))
+            try:
+                elements[num].click()
+            except WebDriverException:
+                pass
         else:
             print "元素未查找到"
 
@@ -228,4 +233,71 @@ class DriverBase:
         # element.click()
         # element.clear()
 
+    #鼠标悬停
+    def action_perfom(self,ele):
+        action = ActionChains(self.driver)
+        action.click(ele).perform()
+
+    def click(self,ele,num=-1):
+        if num==-1:
+            num=random(len(ele))
+            ele[num].click()
+        ele[num].click()
+
+    '''三级联动点击
+    缺少超边框后的的数据添加
+    @bebinn
+    @20180913'''
+    def menu_triple_click(self,first,second=None):
+
+        firstnum=self.findElementsByCssSelector(first)
+        randnum = random.randint(0,len(firstnum)-1)
+        action=ActionChains(self.driver)
+        #方法二：通过判断class是否包含el-cascader-menu__item--extensible，有：含下一级，无：无下一级
+        if firstnum[randnum].is_displayed()==True:
+            action = ActionChains(self.driver)
+            action.move_to_element(firstnum[randnum]).perform()
+            firstnum[randnum].click()
+        else:
+            WebDriverWait(self.driver,10,0.5).until(EC.visibility_of(firstnum[randnum]))
+            firstnum[randnum].click()
+        if "el-cascader-menu__item--extensible" in firstnum[randnum].get_attribute("class"):
+
+            secondnum=self.findElementsByCssSelector(second)
+            randnum2=random.randint(0,len(secondnum)-1)
+            self.ECsclick(second,randnum2)
+            if "el-cascader-menu__item--extensible" in secondnum[randnum2].get_attribute("class"):
+                thirdnum=self.findElementsByCssSelector(second)
+                randnum3=random.randint((len(thirdnum)-len(secondnum)),len(thirdnum)-1)
+                self.ECsclick(second,randnum3)
+        #方法一
+        # if firstnum>1:
+        #     self.ECsclick(first,random(0,len(firstnum)))
+        #     secondnum=self.findElementsByCssSelector(second)
+        #     if secondnum>1:
+        #         self.ECsclick(second,random(0,len(secondnum)))
+        #     third=second.split('>')
+        #     elements = self.findElementsByCssSelector(third[0])
+        #     if len(elements) > 1:
+        #         ids = elements[0].get_attribute("id").split('-')
+        #         ids2 = ""
+        #         for i in range(0, len(ids) - 1):
+        #             print ids[i]
+        #             if i == 0:
+        #                 ids2 = ids[i]
+        #             else:
+        #                 ids2 += '-' + ids[i]
+        #         print ids2
+        #         ids2 += '-2'
+        #         print ids2
+        #         name = "ul#" + ids2 + ">li"
+        #         thirdnum=self.findEle mentsByCssSelector(name)
+        #         self.ECsclick(name, random(len(thirdnum)))
+
+    '''
+    #增加页面刷新
+    @bebinn
+    @20180914'''
+    def refresh(self):
+        self.driver.refresh()
 
