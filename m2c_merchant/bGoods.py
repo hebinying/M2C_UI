@@ -94,7 +94,17 @@ class bTestGoods(unittest.TestCase):
     #新增商品测试
     def test_add_goods(self):
         datas = comMethod.goodsdata
-        datas['logisticsType.for']
+        print datas['addgoogstype.int']
+        for data in datas['addgoogstype.int']:
+            if data ==0:
+                self.good_add_physical()
+            elif data==1:
+                self.good_add_vitual()
+            elif data==2:
+                self.good_add_selfR()
+            else:
+                print "addgoogstype setting in the range(0,2)"
+
     # 增加实物商品
     def good_add_physical(self):
         self.click_add_button()
@@ -193,13 +203,108 @@ class bTestGoods(unittest.TestCase):
                     path='div.poi3 button'
                     self.driver.ECclick(path)
                     #判断有问题
-                    self.driver.assert_text("div.el-message>p","保存成功")
-    #增加虚拟商品
-    def test_good_add_vitual(self):
-        pass
+                    #self.driver.assert_text("div.el-message>p","保存成功")
+    #增加虚拟商品 todayhere
+    def good_add_vitual(self):
+        self.click_add_button()
+        datas = comMethod.goodsdata
+        # 点击实物商品
+        datas['logisticsType.for'] = 1
+        self.driver.ECsclick("label[for='logisticsType']+div label", datas['logisticsType.for'])
+
+        keys = comMethod.goodsdata.keys()
+        for i in range(0, len(keys)):
+            names = keys[i].split('.')
+            print names
+            data = datas[keys[i]]
+            if "for" in keys[i]:
+                path = "label[" + names[1] + "='" + names[0] + "']~div input"
+                print path
+                # 使用local环境
+                if names[0] == "goodsPerMaxNum":
+                    print len(data)
+                    for i in range(0, len(data)):
+                        self.driver.ECsends(path, data[i], i)
+                elif names[0] == "goodsPostageId":
+                   pass
+                elif "logisticsType" in keys[i]:
+                    pass
+                else:
+                    self.driver.ECsend(path, data)
+            if "selected" in names[1]:
+                path = "label[for='" + names[0] + "']~div span"
+                print path
+                self.driver.ECclick(path)
+                # 商品分类
+                if names[0] == 'goodsClassifyId':
+                    self.driver.menu_triple_click("ul[id^='cascader-menu']>li", "ul[id^='menu']>li")
+                # 商品品牌
+                if names[0] == "goodsBrandId":
+                    self.driver.menu_triple_click("ul>div.resize-triggers~li")
+                # 商品分组
+                if names[0] == "goodsGroups":
+                    self.driver.menu_triple_click("div[x-placement='bottom-start'] ul[id^='cascader-menu']>li",
+                                                  "ul[id^='menu']>li")
+            if "id" in names[1]:
+                # 文本编辑
+                if names[0] == 'videoContainer':
+                    path = "div#" + names[0] + " input"
+                    videopath = ROOT(data)
+                    self.driver.ECsend(path, videopath)
+            if "iframe" in names[1]:
+                self.driver.switch_to_iframe(names[2])
+                self.driver.excute_js(data)
+
+            if "class" in names[1]:
+                if names[0] == 'graySpan':
+                    path = "div." + names[0] + " div.el-col>label"
+                    print path
+                    elenum = self.driver.get_elements_number(path)
+                    number = random.randint(0, elenum)
+                    for i in range(0, number):
+                        num = random.randint(0, elenum)
+                        print num
+                        # self.driver.ECsclick(path,num)
+                        elements = self.driver.findElementsByCssSelector(path + '>span')
+                        elements[0].click()
+                if names[0] == 'skuFlag':
+                    pass
+                if names[0] == 'tabPane':
+
+                    elenum = self.driver.get_elements_number("div.tabPane tr")
+                    # 单一规格输入
+                    if elenum == 2:
+                        inventory = data[0]['inventory']
+                        kg = data[0]['kg']
+                        price = data[0]['price']
+                        marketprice = data[0]['marketprice']
+                        supplyprice = data[0]['supplyprice']
+                        goosdscode = data[0]['goosdscode']
+                        self.driver.ECsends("div.tabPane input", inventory, 0)
+                        self.driver.ECsends("div.tabPane input", kg, 1)
+                        self.driver.ECsends("div.tabPane input", str(price), 2)
+                        self.driver.ECsends("div.tabPane input", marketprice, 3)
+                        self.driver.ECsends("div.tabPane input", str(supplyprice), 4)
+                        self.driver.ECsends("div.tabPane input", goosdscode, 5)
+                if names[0] == 'mainImg':
+                    path = 'div.' + names[0] + '~div input'
+
+                    for i in range(0, len(data)):
+                        # data的路径有问题，需要调整未绝对路径
+                        filepath = ROOT(data[i])
+                        print filepath
+                        self.driver.ECsend(path, filepath)
+
+                if names[0] == 'commit':
+                    path = 'div.poi3 button'
+                    if self.driver.contain_title("商品修改新增"):
+                        self.driver.wait(2)
+                        self.driver.ECclick(path)
+                    # 判断有问题
+                    #self.driver.assert_text("div.el-message>p", "保存成功")
 
     #增加自提商品
-    def test_good_add_selfR(self):
+    def good_add_selfR(self):
         pass
 
     #查看商品详情

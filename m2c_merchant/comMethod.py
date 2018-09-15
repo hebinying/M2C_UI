@@ -6,9 +6,9 @@ import datetime
 
 #新增商品
 goodsdata={
-    'addgoogstype':[0,1,2],
+    'addgoogstype.int':[1],
     'logisticsType.for':0,
-    'goodsName.for':u"非手动新增实物商品"+str(datetime.date.today().strftime("%Y.%m.%d %H%M")),
+    'goodsName.for':u"非手动新增实物商品"+str(datetime.datetime.now().strftime("%Y.%m.%d %H%M")),
     'goodsSubTitle.for':u"副标题副标题副标题",
     'goodsClassifyId.selected':'',#商品分类 调用三级联动窗口？
     'goodsBrandId.selected':'',#商品品牌 调用三级联动窗口？
@@ -28,7 +28,7 @@ goodsdata={
         'supplyprice':88.88,#供货价
         'goosdscode':''#商品编码
     }],#规格表class
-    'mainImg.class':[u'./config/商品主图.jpg',u'./config/商品主图.jpg'],#商品主图class
+    'mainImg.class':[u'./config/商品主图.jpg'],#商品主图class
     'videoContainer.id':u'./config/商品视频.mp4',#商品视频id
     'editor-container.iframe.ueditor_0':'',#图文详情id div#id iframe#ueditor_0
     'setupmethod.none':'',#通过查找：设置上架 wording找其父亲div的兄弟，可不用

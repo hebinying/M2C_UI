@@ -248,6 +248,7 @@ class DriverBase:
         title=EC.get_title()(self.driver)
         return title
     def contain_title(self,text):
+        # flag=False
         flag=EC.title_contains(text)(self.driver)
         return flag
 
