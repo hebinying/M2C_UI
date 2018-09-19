@@ -78,7 +78,7 @@ class DriverBase:
         else:
             locater=(By.CLASS_NAME,ele)
         WebDriverWait(self.driver, 20, 2).until(EC.presence_of_element_located(locater))'''
-        element=WebDriverWait(self.driver,10).until(lambda x:x.find_element_by_css_selector(ele))
+        element=WebDriverWait(self.driver,30).until(lambda x:x.find_element_by_css_selector(ele))
         #element=self.driver.find_element_by_css_selector(ele)
         return element
 
@@ -93,7 +93,7 @@ class DriverBase:
         return elements
 
     def findElementsByClassName(self,cName):
-        elements=WebDriverWait(self.driver,10).until(lambda x:x.find_elements_by_class_name(cName))
+        elements=WebDriverWait(self.driver,30).until(lambda x:x.find_elements_by_class_name(cName))
         #elements = self.driver.find_elements_by_class_name(cName)
         return elements
 
@@ -103,13 +103,13 @@ class DriverBase:
 
 
     def findElementsByPath(self,path):
-        elements=WebDriverWait(self.driver,10).until(lambda x:x.find_elements_by_xpath(path))
+        elements=WebDriverWait(self.driver,30).until(lambda x:x.find_elements_by_xpath(path))
 
         #elements=self.driver.find_elements_by_xpath(path)
         return elements
 
     def findElementsByCssSelector(self,ele):
-        elements=WebDriverWait(self.driver,10).until(lambda x:x.find_elements_by_css_selector(ele))
+        elements=WebDriverWait(self.driver,30).until(lambda x:x.find_elements_by_css_selector(ele))
         #elements=self.driver.find_elements_by_css_selector(ele)
         #print "wo be here"
         return elements
@@ -119,7 +119,7 @@ class DriverBase:
 
         element=self.findElementByCssSelector(name)
 
-        WebDriverWait(self.driver, 10,0.5).until(EC.visibility_of(element))
+        WebDriverWait(self.driver, 30,0.5).until(EC.visibility_of(element))
         if element:
             self.action.move_to_element(element)
             element.click()
@@ -340,3 +340,15 @@ class DriverBase:
     def assert_text(self,path,text):
         WebDriverWait(self.driver, 10, 0.5).until(EC.text_to_be_present_in_element(self.driver.findElementsByCssSelector("div.el-message>p").text),text)
 
+    def assert_exit(self,path):
+        return EC.visibility_of(self.driver.find_element_by_css_selector(path))
+
+
+    #清空输入框
+    def clear(self,name,method='css'):
+        if method=='css':
+            element=self.findElementByCssSelector(name)
+            if element:
+                element.clear()
+        else:
+            print "清空失败"
