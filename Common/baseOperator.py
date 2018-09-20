@@ -171,6 +171,7 @@ class DriverBase:
 
     #获取元素的数量 @bebinn @0915
     def get_elements_number(self,name,method='css'):
+        num = 0
         if method=='css':
             elements=self.driver.find_elements_by_css_selector(name)
         elif method=='path':
@@ -182,7 +183,9 @@ class DriverBase:
         else:
             print "method error,now can find elements by css,path,tagname,classname"
 
-        return len(elements)
+        if elements:
+            num = len(elements)
+        return num
     '''选项卡的切换'''
     def changewintofirst(self):
         self.driver.switch_to_window(self.driver.window_handles[0])

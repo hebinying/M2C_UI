@@ -110,6 +110,8 @@ def commTestSuite():
         path = xmlToPath + '/' + xmlHeader + '.html'
         fp = open(path, "wb")
         print xmlHeader, xmlDescrip
+
+
         runner = HTMLTestRunner.HTMLTestRunner(stream=fp, verbosity=1, title=xmlHeader, description=xmlDescrip)
 
         if xmlmethod == "discover":
@@ -143,9 +145,9 @@ def commTestSuite():
         else:
             print "其他方法暂未实现"
             break
-        result = runner.run(suite)
-        print result.success_count
-        print result.failure_count
+        runner.run(suite)
+        # print result.success_count
+        # print result.failure_count
         fp.close()
         #HTMLReportRun(xmlHeader,xmlDescrip,xmlToPath,suite)
 

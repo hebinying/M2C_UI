@@ -24,9 +24,15 @@ class bTestGoods(unittest.TestCase):
         # cls.driver.ECclick("button")
 
     def setUp(self):
-
-        self.driver.ECsclick("div.public_nav",2)
-        self.driver.wait(1)
+        #目录点击
+        try:
+            #判断二级目录是否是打开状态
+            self.assertIn("display: block;",self.driver.findElementsByCssSelector("div.content_container")[1].get_attribute("style"))
+            print "无需点击菜单"
+        except:
+            print "点击菜单"
+            self.driver.ECsclick("div.public_nav", 2)
+            self.driver.wait(1)
         self.driver.EPclick("//div[@path='/s/goodList']")
         self.driver.wait(1)
 
@@ -431,6 +437,7 @@ class bTestGoods(unittest.TestCase):
         elements=self.driver.findElementsByCssSelector("body>ul.el-dropdown-menu")
         for element in elements:
             if "display" in element.get_attribute("style"):
+                print "here"
                 continue
             else:
                 #点击详情btn
@@ -445,40 +452,48 @@ class bTestGoods(unittest.TestCase):
             logging.info("打开详情页成功")
             #关闭当前窗口
             self.driver.stopDriver()
-            self.driver.changewinton(0)
         except Exception:
             logging.error("打开详情页失败")
 
     #商品库修改商品
     def test_goods_modify(self):
-        # 获取对应点击的商品名称
-        goodstitle = self.driver.findElementsByCssSelector("div.good_info  td[class^='el-table_1_column'] p[title]")
+        try:
+            # 获取对应点击的商品名称
+            goodstitle = self.driver.findElementsByCssSelector("div.good_info  td[class^='el-table_1_column'] p[title]")
 
-        num = random.randint(0, self.driver.get_elements_number("div.good_info i.cursor")-1)
-        print num
+            num = random.randint(0, self.driver.get_elements_number("div.good_info i.cursor")-1)
+            print num
 
-        goodtitle = goodstitle[num * 2].get_attribute("title")
-        print goodtitle
-        self.driver.ECsclick("div.good_info i.cursor", num)
-        elements = self.driver.findElementsByCssSelector("body>ul.el-dropdown-menu")
-        for element in elements:
-            if "display" in element.get_attribute("style"):
-                continue
-            else:
-                # 点击编辑btn
-                self.driver.ECsclick("body>ul>li", 2)
-                self.driver.changewinton(1)
-        # 分类、拍获价、供货价、新增规格需要再次审核
-        #修改其他的参数
-        #只改标题
-        #goodNameelement=self.driver.findElementByCssSelector("label[for='goodsName']~div input")
-        goodName=goodtitle+str(datetime.datetime.today().strftime("%Y.%m.%d %H%m"))
-        self.driver.clear("label[for='goodsName']~div input")
-        self.driver.ECsend("label[for='goodsName']~div input",goodName)
-        path = 'div.poi3 button'
-        if self.driver.contain_title("商品修改新增"):
-            self.driver.wait(2)
-            self.driver.ECclick(path)
+            goodtitle = goodstitle[num * 2].get_attribute("title")
+            print goodtitle
+            self.driver.ECsclick("div.good_info i.cursor", num)
+            elements = self.driver.findElementsByCssSelector("body>ul.el-dropdown-menu")
+            for element in elements:
+                if "display" in element.get_attribute("style"):
+                    continue
+                else:
+                    # 点击编辑btn
+                    self.driver.ECsclick("body>ul>li", 2)
+                    self.driver.changewinton(1)
+            # 分类、拍获价、供货价、新增规格需要再次审核
+            #修改其他的参数
+            #只改标题
+            #goodNameelement=self.driver.findElementByCssSelector("label[for='goodsName']~div input")
+            goodName=goodtitle+str(datetime.datetime.today().strftime("%Y.%m.%d %H%m"))
+            t=0
+            while t<10:
+                try:
+                    self.driver.clear("label[for='goodsName']~div input")
+                    self.driver.ECsend("label[for='goodsName']~div input",goodName)
+                    break
+                except:
+                    t+=1
+            path = 'div.poi3 button'
+            if self.driver.contain_title("商品修改新增"):
+                self.driver.wait(2)
+                self.driver.ECclick(path)
+        except:
+            logging.error("商品修改失败")
          #返回第一个标签页
         self.driver.changewinton(0)
 
@@ -525,8 +540,10 @@ class bTestGoods(unittest.TestCase):
         if nums > 0:
             num = random.randint(0, nums - 1)
             print num
-            goodtitle = self.driver.findElementsByCssSelector("div.good_info  td[class^='el-table_1_column'] p[title]")[
-                num].get_attribute("title")
+            try:
+                goodtitle = self.driver.findElementsByCssSelector("div.good_info  td[class^='el-table_1_column'] p[title]")[num].get_attribute("title")
+            except:
+                print "title get failed"
             self.driver.ECsclick("div.good_info i.cursor", num)
             elements = self.driver.findElementsByCssSelector("body>ul.el-dropdown-menu")
             for element in elements:
@@ -578,6 +595,7 @@ class bTestGoods(unittest.TestCase):
 
     def tearDown(self):
         self.driver.changewinton(0)
+        self.driver.refresh()
         self.driver.wait(2)
     @classmethod
     def tearDownClass(cls):
@@ -596,11 +614,22 @@ class bTestconfirmGoods(unittest.TestCase):
         # cls.driver.ECclick("button")
 
     def setUp(self):
-        self.driver.ECsclick("div.public_nav", 2)
+        t=0
+        try:
+            self.assertIn("block",self.driver.findElementsByCssSelector("div.content_container")[1].get_attribute("style"))
+
+            print "无需点击菜单"
+
+        except:
+            print "点击菜单成功"
+            self.driver.ECsclick("div.public_nav", 2)
+
         self.driver.EPclick("//div[@path='/s/goodList']")
         self.driver.wait(1)
         #点击商品库tab
         self.driver.ECclick("div#tab-second")
+
+
 
 
     # 待审核商品查询
@@ -640,7 +669,8 @@ class bTestconfirmGoods(unittest.TestCase):
 
         elements = self.driver.findElementsByCssSelector("body>ul.el-dropdown-menu")
         for element in elements:
-            if "display" in element.get_attribute("style"):
+            print element.get_attribute("style")
+            if "none" in element.get_attribute("style"):
                 continue
             else:
                 # 点击详情btn
@@ -661,36 +691,39 @@ class bTestconfirmGoods(unittest.TestCase):
 
     # 待审核商品修改商品
     def test_goods_modify(self):
-        # 获取对应点击的商品名称
-        goodstitle = self.driver.findElementsByCssSelector("div#pane-second div.good_info  td[class^='el-table_1_column'] p[title]")
+        try:
+            # 获取对应点击的商品名称
+            goodstitle = self.driver.findElementsByCssSelector("div#pane-second div.good_info  td[class^='el-table_1_column'] p[title]")
 
-        num = random.randint(0, self.driver.get_elements_number("div#pane-second div.good_info i.cursor"))
-        print num
+            num = random.randint(0, self.driver.get_elements_number("div#pane-second div.good_info i.cursor")-1)
+            print num
 
-        goodtitle = goodstitle[num].get_attribute("title")
-        print goodtitle
-        self.driver.ECsclick("div#pane-second div.good_info i.cursor", num)
+            goodtitle = goodstitle[num].get_attribute("title")
+            print goodtitle
+            self.driver.ECsclick("div#pane-second div.good_info i.cursor", num)
 
-        elements = self.driver.findElementsByCssSelector("body>ul.el-dropdown-menu")
-        for element in elements:
-            if "display" in element.get_attribute("style"):
-                continue
-            else:
-                # 点击编辑btn
-                self.driver.ECsclick("body>ul>li", 1)
-                self.driver.changewinton(1)
-        # 分类、拍获价、供货价、新增规格需要再次审核
-        # 修改其他的参数
-        # 只改标题
-        goodName = goodtitle + str(datetime.datetime.today().strftime("%Y.%m.%d.%H.%m"))
-        self.driver.click("label[for='goodsName']~div input")
-        self.driver.ECsend("label[for='goodsName']~div input", goodName)
-        path = 'div.poi3 button'
-        if self.driver.contain_title("商品修改新增"):
-            self.driver.wait(2)
-            self.driver.ECclick(path)
-        #返回第一个标签页
-        self.driver.changewinton(0)
+            elements = self.driver.findElementsByCssSelector("body>ul.el-dropdown-menu")
+            for element in elements:
+                print element.get_attribute("style")
+                if "none" in element.get_attribute("style"):
+                    continue
+                else:
+                    # 点击编辑btn
+                    self.driver.ECsclick("body>ul>li", 1)
+            self.driver.changewinton(1)
+            # 分类、拍获价、供货价、新增规格需要再次审核
+            # 修改其他的参数
+            # 只改标题
+            goodName = goodtitle + str(datetime.datetime.today().strftime("%Y.%m.%d.%H.%m"))
+            self.driver.clear("label[for='goodsName']~div input")
+            self.driver.ECsend("label[for='goodsName']~div input", goodName)
+            path = 'div.poi3 button'
+            if self.driver.contain_title("商品修改新增"):
+                self.driver.wait(2)
+                self.driver.ECclick(path)
+        except:
+            logging.error("待审核商品修改失败")
+
     # 商品库删除商品
     def test_goods_delete(self):
         # 判断是否有结果
@@ -727,6 +760,9 @@ class bTestconfirmGoods(unittest.TestCase):
         except:
             logging.error("删除待审核商品未执行")
 
+    def tearDown(self):
+        self.driver.changewinton(0)
+
     @classmethod
     def tearDownClass(cls):
         cls.driver.stopDriver()
@@ -744,10 +780,14 @@ class bTestdeleteGoods(unittest.TestCase):
         # cls.driver.ECclick("button")
 
     def setUp(self):
-        self.driver.ECsclick("div.public_nav", 2)
+        try:
+            self.assertIn("block;",self.driver.findElementsByCssSelector("div.content_container" )[1].get_attribute("style"))
+        except:
+            print "点击菜单,展开二级目录"
+            self.driver.ECsclick("div.public_nav", 2)
         self.driver.EPclick("//div[@path='/s/goodList']")
         self.driver.wait(1)
-        #点击商品库tab
+        #点击删除tab
         self.driver.ECclick("div#tab-delete")
 
 
@@ -831,6 +871,9 @@ class bTestdeleteGoods(unittest.TestCase):
         except:
             logging.error("删除待审核商品未执行")
 
+    def tearDown(self):
+        self.driver.changewinton(0)
+
     @classmethod
     def tearDownClass(cls):
         cls.driver.stopDriver()
@@ -845,7 +888,7 @@ class bTestGoodAppraise(unittest.TestCase):
         cls.driver = BO.DriverBase("chrome")
         cls.driver.get_url("http://b.m2c2017final.com")
         comMethod.bloggin(cls.driver, '13500000070', '123456')
-    def click_menu(self):
+    def setUp(self):
         self.driver.ECsclick("div.public_nav", 2)
         if "display" in self.driver.findElementsByCssSelector("div.content_container")[1].get_attribute("style"):
             self.driver.EPclick("//div[@path='/s/goodAppraise']")
@@ -853,22 +896,25 @@ class bTestGoodAppraise(unittest.TestCase):
 
     #商品评价搜索
     def test_Reviews_search(self):
-        # 回复状态
-        self.driver.ECsclick("div.el-input--suffix",0)
-        #0:未回复，1:已回复
-        self.driver.EPsclick("//span[text()='回复状态']/parent::*/following-sibling::li",random.randint(0,1))
-        # 评价星级
-        self.driver.ECsclick("div.el-input--suffix", 1)
-        # 0-5，分别是1-5星
-        self.driver.EPsclick("//span[text()='评价星级']/parent::*/following-sibling::li", random.randint(0, 1))
-        # 选择搜索时间，默认设置：按当天时间取前30天
-        enddate = datetime.date.today()
-        startdate = enddate + datetime.timedelta(days=-30)
-        GSB.time_input(self.driver, "div.searcWrap>div.el-date-editor>input", startdate, enddate)
-        #搜索框
-        self.driver.ECsend("div.searcWrap>div.el-input>input","test")
-        #点击搜索按钮
-        self.driver.ECclick("button.btn-search")
+        try:
+            # 回复状态
+            self.driver.ECsclick("div.el-input--suffix",0)
+            #0:未回复，1:已回复
+            self.driver.EPsclick("//span[text()='回复状态']/parent::*/following-sibling::li",random.randint(0,1))
+            # 评价星级
+            self.driver.ECsclick("div.el-input--suffix", 1)
+            # 0-5，分别是1-5星
+            self.driver.EPsclick("//span[text()='评价星级']/parent::*/following-sibling::li", random.randint(0, 4))
+            # 选择搜索时间，默认设置：按当天时间取前30天
+            enddate = datetime.date.today()
+            startdate = enddate + datetime.timedelta(days=-30)
+            GSB.time_input(self.driver, "div.searcWrap>div.el-date-editor>input", startdate, enddate)
+            #搜索框
+            self.driver.ECsend("div.searcWrap>div.el-input>input","test")
+            #点击搜索按钮
+            self.driver.ECclick("button.btn-search")
+        except:
+            logging.error("商品评价因某种原因测试搜索失败")
 
 
 
@@ -878,18 +924,20 @@ class bTestGoodAppraise(unittest.TestCase):
             # 搜索未回复的评价
             self.driver.ECsclick("div.el-input--suffix", 0)
             # 0:未回复，1:已回复
-            self.driver.EPsclick("//span[text()='回复状态']/parent::*/following-sibling::li", 1)
-            elenum=self.driver.get_elements_number("tbody>tr")
-            if elenum>0:
-                self.driver.ECsclick("i.icon_hp",random.randint(0,elenum-1))
+            self.driver.EPsclick("//span[text()='回复状态']/parent::*/following-sibling::li", 0)
+            # 点击搜索按钮
+            self.driver.ECclick("button.btn-search")
+            self.driver.wait(1)
+            num=self.driver.get_elements_number("table>tbody")
+            if num>1:
+                self.driver.ECsclick("i.icon_hp",random.randint(0,num-1))
+                #未进行校验过
                 self.driver.ECsend("div.hptczp_body>textarea","UI自动回复自动回复保存")
                 self.driver.ECclick("button.save")
             else:
                 logging.warning("无需回复的评价")
         except:
             logging.error("不可描述的错误")
-    def tearDown(self):
-        self.driver.refresh()
 
     @classmethod
     def tearDownClass(cls):
