@@ -2,7 +2,7 @@
 <Email>
     <EmailServerConf>
         <!-- smtp配置 ：只支持1个-->
-        <smtp  ip="smtp.exmail.qq.com" port="465" user="heby@m2c2017.com" password="UZw3WKwVHetaABBm" />
+        <smtp  ip="smtp.exmail.qq.com" port="465" user="发送邮箱" password="邮箱密码" />
     </EmailServerConf>
     <!-- 收件人：支持多个 -->
     <From address="heby@m2c2017.com"/>
